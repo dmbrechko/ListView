@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ListView</string>
+    <string name="catalog_of_users">Catalog of users</string>
+    <string name="enter_name">Enter name</string>
+    <string name="enter_age">Enter age</string>
+    <string name="save">Save</string>
+    <string name="exit">Exit</string>
+    <string name="wrong_input">Wrong input</string>
+</resources>
