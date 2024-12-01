@@ -6,4 +6,8 @@
     <string name="save">Save</string>
     <string name="exit">Exit</string>
     <string name="wrong_input">Wrong input</string>
+    <string name="delete_user_with_name">Delete user with name: %s</string>
+    <string name="confirm_deleting">Confirm deleting</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
 </resources>

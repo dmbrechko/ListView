@@ -15,9 +15,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.listview.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), Removable {
     private lateinit var binding: ActivityMainBinding
     private val list = mutableListOf<User>()
+    private lateinit var adapter: ArrayAdapter<User>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.apply {
             setSupportActionBar(toolbar)
-            val adapter = object: ArrayAdapter<User>(this@MainActivity, android.R.layout.simple_list_item_2, list) {
+            adapter = object: ArrayAdapter<User>(this@MainActivity, android.R.layout.simple_list_item_2, list) {
                 override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                     var row = convertView
                     if (row == null) {
@@ -40,8 +41,8 @@ class MainActivity : AppCompatActivity() {
                     val user = list[position]
                     row?.findViewById<TextView>(android.R.id.text1)?.text = String
                         .format("Name: %s", user.name)
-                    row?.findViewById<TextView>(android.R.id.text2)?.text = String.format(
-                        "Age: %s", user.age)
+                    row?.findViewById<TextView>(android.R.id.text2)?.text = String
+                        .format("Age: %s", user.age)
                     return row!!
                 }
             }
@@ -53,10 +54,18 @@ class MainActivity : AppCompatActivity() {
                 ageET.text.clear()
             }
             listLV.setOnItemClickListener { _, _, position, _ ->
-                list.removeAt(position)
-                adapter.notifyDataSetChanged()
+                val args = Bundle().apply {
+                    putInt(MyDialog.KEY_USER_INDEX, position)
+                    putString(MyDialog.KEY_USER_NAME, list[position].name)
+                }
+                MyDialog().apply { arguments = args }.show(supportFragmentManager, MyDialog.TAG)
             }
         }
+    }
+
+    override fun remove(index: Int) {
+        list.removeAt(index)
+        adapter.notifyDataSetChanged()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -71,6 +80,10 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
+}
+
+interface Removable {
+    fun remove(index: Int)
 }
 
 data class User(val name: String, val age: String)
