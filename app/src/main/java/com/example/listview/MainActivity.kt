@@ -10,14 +10,17 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.listview.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private val viewModel by viewModels<MainViewModel>()
     private lateinit var binding: ActivityMainBinding
-    private val list = mutableListOf<User>()
+    private var list = mutableListOf<User>()
+    private lateinit var adapter: ArrayAdapter<User>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,9 +31,12 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        viewModel.list.observe(this) { list ->
+            setList(list)
+        }
         binding.apply {
             setSupportActionBar(toolbar)
-            val adapter = object: ArrayAdapter<User>(this@MainActivity, android.R.layout.simple_list_item_2, list) {
+            adapter = object: ArrayAdapter<User>(this@MainActivity, android.R.layout.simple_list_item_2, list) {
                 override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                     var row = convertView
                     if (row == null) {
@@ -47,17 +53,27 @@ class MainActivity : AppCompatActivity() {
             }
             listLV.adapter = adapter
             saveBTN.setOnClickListener {
-                list.add(User(nameET.text.toString(), ageET.text.toString()))
-                adapter.notifyDataSetChanged()
+                if (nameET.text.isBlank() || ageET.text.isBlank()) {
+                    Toast.makeText(this@MainActivity,
+                        R.string.fill_all_fields, Toast.LENGTH_SHORT)
+                        .show()
+                }
+                viewModel.addItem(User(nameET.text.toString(), ageET.text.toString()))
                 nameET.text.clear()
                 ageET.text.clear()
             }
             listLV.setOnItemClickListener { _, _, position, _ ->
-                list.removeAt(position)
-                adapter.notifyDataSetChanged()
+                viewModel.removeItem(position)
             }
         }
     }
+
+    fun setList(list: List<User>) {
+        adapter.clear()
+        adapter.addAll(list)
+        adapter.notifyDataSetChanged()
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_activity_main, menu)

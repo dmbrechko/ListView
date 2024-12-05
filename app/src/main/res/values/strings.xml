@@ -6,4 +6,5 @@
     <string name="save">Save</string>
     <string name="exit">Exit</string>
     <string name="wrong_input">Wrong input</string>
+    <string name="fill_all_fields">Fill all fields please</string>
 </resources>
