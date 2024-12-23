@@ -17,7 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.listview.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by viewModels<UserViewModel>()
     private lateinit var binding: ActivityMainBinding
     private var list = mutableListOf<User>()
     private lateinit var adapter: ArrayAdapter<User>
